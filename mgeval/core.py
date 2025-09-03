@@ -265,7 +265,7 @@ class metrics(object):
             return transition_matrix / sum(sum(transition_matrix))
 
         else:
-            print "invalid normalization mode, return unnormalized matrix"
+            print("invalid normalization mode, return unnormalized matrix")
             return transition_matrix
 
     def pitch_range(self, feature):
@@ -548,7 +548,7 @@ class metrics(object):
             return transition_matrix / sum(sum(transition_matrix))
 
         else:
-            print "invalid normalization mode, return unnormalized matrix"
+            print("invalid normalization mode, return unnormalized matrix")
             return transition_matrix
 
     # def chord_dependency(self, feature, bar_chord, bpm=120, num_bar=None, track_num=1):
