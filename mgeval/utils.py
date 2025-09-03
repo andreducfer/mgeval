@@ -13,18 +13,36 @@ from scipy import stats, integrate
 
 # Calculate overlap between the two PDF
 def overlap_area(A, B):
-    pdf_A = stats.gaussian_kde(A)
-    pdf_B = stats.gaussian_kde(B)
-    return integrate.quad(lambda x: min(pdf_A(x), pdf_B(x)), np.min((np.min(A), np.min(B))), np.max((np.max(A), np.max(B))))[0]
+    # Remove inf and NaN values
+    A = A[np.isfinite(A)]
+    B = B[np.isfinite(B)]
+    # Check for constant arrays or too few unique values
+    if len(A) < 2 or len(B) < 2 or len(np.unique(A)) < 2 or len(np.unique(B)) < 2:
+        return np.nan
+    try:
+        pdf_A = stats.gaussian_kde(A)
+        pdf_B = stats.gaussian_kde(B)
+        return integrate.quad(lambda x: min(pdf_A(x), pdf_B(x)), np.min((np.min(A), np.min(B))), np.max((np.max(A), np.max(B))))[0]
+    except np.linalg.LinAlgError:
+        return np.nan
 
 
 # Calculate KL distance between the two PDF
 def kl_dist(A, B, num_sample=1000):
-    pdf_A = stats.gaussian_kde(A)
-    pdf_B = stats.gaussian_kde(B)
-    sample_A = np.linspace(np.min(A), np.max(A), num_sample)
-    sample_B = np.linspace(np.min(B), np.max(B), num_sample)
-    return stats.entropy(pdf_A(sample_A), pdf_B(sample_B))
+    # Remove inf and NaN values
+    A = A[np.isfinite(A)]
+    B = B[np.isfinite(B)]
+    # Check for constant arrays or too few unique values
+    if len(A) < 2 or len(B) < 2 or len(np.unique(A)) < 2 or len(np.unique(B)) < 2:
+        return np.nan
+    try:
+        pdf_A = stats.gaussian_kde(A)
+        pdf_B = stats.gaussian_kde(B)
+        sample_A = np.linspace(np.min(A), np.max(A), num_sample)
+        sample_B = np.linspace(np.min(B), np.max(B), num_sample)
+        return stats.entropy(pdf_A(sample_A), pdf_B(sample_B))
+    except np.linalg.LinAlgError:
+        return np.nan
 
 
 def c_dist(A, B, mode='None', normalize=0):

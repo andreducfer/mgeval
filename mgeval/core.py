@@ -52,6 +52,7 @@ class metrics(object):
         Returns:
         'used_pitch': with shape of [num_bar,1]
         """
+        note_list = []
         pattern = feature['midi_pattern']
         pattern.make_ticks_abs()
         resolution = pattern.resolution
