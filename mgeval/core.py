@@ -217,8 +217,11 @@ class metrics(object):
             bar_length = int(math.ceil(bar_length))
 
         if actual_bar > num_bar:
-            mod = np.mod(len(piano_roll), bar_length*128)
-            piano_roll = piano_roll[:-np.mod(len(piano_roll), bar_length)].reshape((num_bar, -1, 128))  # make exact bar
+                # Ensure piano_roll length is divisible by num_bar * 128 before reshaping
+                total_size = (len(piano_roll) // (num_bar * 128)) * (num_bar * 128)
+                if total_size == 0:
+                    raise ValueError("Cannot reshape piano_roll: num_bar={}, piano_roll size={}".format(num_bar, len(piano_roll)))
+                piano_roll = piano_roll[:total_size].reshape((num_bar, -1, 128))
         elif actual_bar == num_bar:
             piano_roll = piano_roll.reshape((num_bar, -1, 128))
         else:
